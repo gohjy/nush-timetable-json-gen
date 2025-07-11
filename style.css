@@ -1,0 +1,32 @@
+#control-bar span {
+    display: inline-block;
+    width: 10em;
+    text-align: center;
+}
+
+.main-table {
+    width: 100%;
+}
+
+.main-table :is(th, td) {
+    padding: .2em;
+    text-align: left;
+}
+
+.main-table :is(th, td):nth-child(2) {
+    border-left: 1px solid black;
+}
+
+.main-table :is(th, td):nth-child(1) {
+    width: 10em;
+}
+
+.main-table:not(.active) { display: none; }
+
+.input-holder {
+    display: inline-block;
+}
+
+.input-holder:first-child button {
+    display: none;
+}
