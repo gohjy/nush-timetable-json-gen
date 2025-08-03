@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" class="light monospace">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable to JSON - nush-timetable-json-gen</title>
+    <link href="https://cdn.jsdelivr.net/gh/gohjy/base-css@ace534b313ec15122645d2edf4547d44b5af14b9/css/main.min.css" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+</head>
+<body>
+    <h1>NUSH Timetable to JSON</h1>
+    
+    <form action="../fill/" class="view" id="view-main">
+        <div id="yearSelect-container">
+            Please enter this year:
+            <input type="number" min="2005" id="year" name="year" required>
+        </div>
+        <br>
+        <div id="semSelect-container">
+            Please enter the semester:
+            <input type="radio" value="1" name="sem" id="semSelect-1" required>
+            <label for="semSelect-1">Sem 1</label>
+            <input type="radio" value="2" name="sem" id="semSelect-2" required>
+            <label for="semSelect-2">Sem 2</label>
+        </div>
+        <br>
+        <div id="classIdSelect-container">
+            Please enter the class, e.g. 101: 
+            <input type="number" min="101" max="607" id="classIdSelect" name="class" required>
+        </div>
+        <br>
+        <div id="submit-container">
+            <input type="submit" value="Continue">
+        </div>
+    </div>
+</body>
+</html>

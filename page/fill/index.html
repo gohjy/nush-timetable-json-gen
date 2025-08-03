@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" class="light monospace">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable to JSON - nush-timetable-json-gen</title>
+    <link href="https://cdn.jsdelivr.net/gh/gohjy/base-css@ace534b313ec15122645d2edf4547d44b5af14b9/css/main.min.css" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+    <script src="./fill.js" type="module"></script>
+</head>
+<body>
+    <h1>NUSH Timetable to JSON</h1>
+    
+    <div class="view" id="view-main">
+        <div id="meta-container">
+            LOADING...
+        </div>
+        <br><br>
+        <div id="main-container">
+            <div id="control-bar">
+                <button id="prevDayBtn">&lt;</button>
+                <span id="dayName">Monday</span>
+                <button id="nextDayBtn">&gt;</button>
+            </div>
+            <br>
+            <div>
+                <details>
+                    <summary>Guide to Course Code Input</summary>
+                    <ul>
+                        <li>Use the + button to add more than one course code (e.g. MTL options)</li>
+                        <li>A blank field indicates a free period or one that is left blank on the timetable</li>
+                        <li>Leave a blank field at the end of a list for elective slots and other slots where not everyone has a class</li>
+                        <li>RC => recess</li>
+                        <li>LUN => lunch</li>
+                        <li>MEN => mentoring</li>
+                        <li>CCE => CCE</li>
+                    </ul>
+                </details>
+            </div>
+            <br>
+            <div id="tables-container">
+                <table class="main-table active" data-day="1">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Course codes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table class="main-table" data-day="2">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Course codes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table class="main-table" data-day="3">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Course codes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table class="main-table" data-day="4">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Course codes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table class="main-table" data-day="5">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Course codes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="done">Done (submit) (cannot edit afterwards)</button>
+        </div>
+    </div>
+</body>
+</html>
