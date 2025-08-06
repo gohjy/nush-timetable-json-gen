@@ -134,8 +134,13 @@ async function submitHandler() {
             let thatData = [];
             let thatRow = rows[period - 1];
             for (let course of thatRow.querySelectorAll(".courseCodeInput")) {
-                let courseInputData = {
-                    courseCode: course.value.trim()
+                let courseVal = course.value.trim();
+                let courseInputData = {};
+                if (["cce", "pe"].includes(courseVal.toLowerCase())) {
+                    courseInputData.subject = courseVal;
+                    continue;
+                } else {
+                    courseInputData.courseCode = courseVal;
                 };
                 if (mustHydrate) {
                     let options = posData.filter(x => x.code.trim() === courseInputData.courseCode);
