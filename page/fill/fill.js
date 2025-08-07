@@ -104,7 +104,13 @@ prevBtn.addEventListener("click", () => btnClickHandler(false));
 nextBtn.addEventListener("click", () => btnClickHandler(true));
 
 async function submitHandler() {
-    const posData = await getPosData(year + (6 - (+classId.slice(0, 1))));
+    let posData;
+    try {
+        posData = await getPosData(year + (6 - (+classId.slice(0, 1))));
+    } catch(e) {
+        console.error(e);
+        posData = [];
+    }
     let mustHydrate = true;
     if (!posData) {
         alert("POS could not be fetched, continuing without autofill");
@@ -202,11 +208,32 @@ async function submitHandler() {
         data.data.push(thisData);
     }
 
-    const stringified = JSON.stringify(data);
+    const stringified = JSON.stringify(data, null, 2);
 
-    const urlObj = new URL("../out/", location.href);
-    urlObj.searchParams.set("data", stringified);
-    location.assign(urlObj.href);
+    const outputArea = document.createElement("div");
+    outputArea.classList.add("output-area");
+    outputArea.textContent = stringified;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "Copy JSON";
+    copyBtn.addEventListener("click", async () => {
+        copyBtn.disabled = true;
+        try {
+            await navigator.clipboard.writeText(stringified);
+            copyBtn.textContent = "Copied!";
+        } catch(e) {
+            console.error(e);
+            copyBtn.textContent = "Failed to copy!";
+        } finally {
+            setTimeout(() => {
+                copyBtn.textContent = "Copy JSON";
+                copyBtn.disabled = false;
+            }, 2000);
+        }
+    });
+
+    document.querySelector("#output-container").innerHTML = "";
+    document.querySelector("#output-container").append(copyBtn, outputArea);
 }
 
 document.querySelector("#done").addEventListener("click", submitHandler);
