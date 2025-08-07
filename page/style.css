@@ -1,3 +1,7 @@
+:where(html) {
+    font-family: "Inconsolata", 'Courier New', Courier, monospace;
+}
+
 #control-bar span {
     display: inline-block;
     width: 10em;
@@ -29,4 +33,9 @@
 
 .input-holder:first-child button {
     display: none;
+}
+
+.output-area {
+    font-size: .75em;
+    white-space-collapse: preserve;
 }
