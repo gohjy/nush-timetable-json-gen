@@ -155,8 +155,8 @@ async function submitHandler() {
 
                         if (courseInputData.courseCode.match(/^DV(?=\d)/i)) {
                             courseInputData.shortName = "DV " + courseInputData.shortName;
-                            courseInputData.shortName.replace(/\b(D)esign (and|\&) (E)ngineering\b/i, "$1&$3");
-                            courseInputData.shortName.replace(/\b(S)cien(ce|tific) (P)resentations?\b/i, "$1$3");
+                            courseInputData.shortName = courseInputData.shortName.replace(/\b(D)esign (and|\&) (E)ngineering\b/i, "$1&$3");
+                            courseInputData.shortName = courseInputData.shortName.replace(/\b(S)cien(ce|tific) (P)resentations?\b/i, "$1$3");
                         }
 
                         if (longName.match(/^Advanced\b/)) {
