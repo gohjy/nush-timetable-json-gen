@@ -7,10 +7,14 @@ const classId = thisLoc.get("class");
     if (
         !year
         || (sem !== 1 && sem !== 2)
-        || !"101 102 103 104 105 106 201 202 203 204 205 206 \
-            301 302 303 304 305 306 401 402 403 404 405 406 \
-            501 502 503 504 505 506 601 602 603 604 605 606 \
-            307 407 507 607".split(" ").filter(x => !!x).includes(classId)
+        || ![
+            "101", "102", "103", "104", "105", "106", 
+            "201", "202", "203", "204", "205", "206", 
+            "301", "302", "303", "304", "305", "306", "307",
+            "401", "402", "403", "404", "405", "406", "407",
+            "501", "502", "503", "504", "505", "506", "507",
+            "601", "602", "603", "604", "605", "606", "607"
+        ].includes(classId)
     ) {
         alert("Invalid parameters!");
         location.replace("../meta/");
@@ -105,11 +109,12 @@ nextBtn.addEventListener("click", () => btnClickHandler(true));
 
 async function submitHandler() {
     let posData;
+    let acadYear = year + (6 - (+classId.slice(0, 1)));
     try {
-        posData = await getPosData(year + (6 - (+classId.slice(0, 1))));
+        posData = await getPosData(acadYear);
     } catch(e) {
         console.error(e);
-        posData = [];
+        posData = null;
     }
     let mustHydrate = true;
     if (!posData) {
@@ -118,6 +123,7 @@ async function submitHandler() {
     }
 
     const data = {
+        version: "3-class-raw",
         meta: {
             year,
             sem,
@@ -142,12 +148,15 @@ async function submitHandler() {
             for (let course of thatRow.querySelectorAll(".courseCodeInput")) {
                 let courseVal = course.value.trim();
                 let courseInputData = {};
-                if (["cce", "pe"].includes(courseVal.toLowerCase())) {
+                if (["cce", "pe", "lun", "rc", "men", "free", ""].includes(courseVal.toLowerCase())) {
                     courseInputData.subject = courseVal;
+                    courseInputData.courseCode = "";
+                    thatData.push(courseInputData);
                     continue;
                 } else {
                     courseInputData.courseCode = courseVal;
                 };
+
                 if (mustHydrate) {
                     let options = posData.filter(x => x.code.trim() === courseInputData.courseCode);
                     if (!options.length) {
@@ -156,45 +165,54 @@ async function submitHandler() {
                         if (options.length > 1) {
                             courseInputData._subject = "WARNING: More than one course was found for this course code in the POS.";
                         }
-                        let longName;
-                        longName = courseInputData.shortName = courseInputData.longName = options[0].title.trim();
-
-                        if (courseInputData.courseCode.match(/^DV(?=\d)/i)) {
-                            courseInputData.shortName = "DV " + courseInputData.shortName;
-                            courseInputData.shortName = courseInputData.shortName.replace(/\b(D)esign (and|\&) (E)ngineering\b/i, "$1&$3");
-                            courseInputData.shortName = courseInputData.shortName.replace(/\b(S)cien(ce|tific) (P)resentations?\b/i, "$1$3");
-                        }
-
-                        if (longName.match(/^Advanced\b/)) {
-                            courseInputData.shortName = courseInputData.shortName.replace("Advanced", "Adv");
-                        }
-
-                        if (longName.match(/^Foundations in \b/i)) {
-                            courseInputData.shortName = courseInputData.shortName.replace(/^Foundations in \b/i, "");
-                        }
-
-                        if (longName.match(/\brobotics\b/i)) {
-                            courseInputData.shortName = courseInputData.shortName.replace(/\b(robot)ics\b/i, "$1");
-                        }
-
-                        if (longName.match(/\bbiology\b/i)) {
-                            courseInputData.shortName = courseInputData.shortName.replace(/\b(bio)logy\b/i, "$1");
-                        }
-
-                        if (longName.match(/\bchemistry\b/i)) {
-                            courseInputData.shortName = courseInputData.shortName.replace(/\b(chem)istry\b/i, "$1");
-                        }
-
-                        // roman numeral regex from StackOverflow:
-                        // https://stackoverflow.com/a/267405
-                        // CC BY-SA 4.0 (https://stackoverflow.com/help/licensing)
                         
-                        // /^(?=.)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/
-                        
-                        if (longName.match(/\bOlympiad\b/i)) {
-                            let match = longName.match(/^(Math|Phys|Bio|Chem)[^\s]* Oly.* Training ((?=.)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3}))$/i);
-                            if (match) {
-                                courseInputData.shortName = match[1] + " Oly " + match[2];
+                        const subjectInfo = options[0];
+                        if (["Elective", "Enrichment"].includes(subjectInfo.type)) {
+                            courseInputData.subject = "ELEC";
+                        } else if (subjectInfo.type.includes("Honours")) {
+                            courseInputData.subject = "HON";
+                        } else if (
+                            [2, 3].includes(acadYear)
+                            && (
+                                // C2026: AR, MU no longer valid for HAMS
+                                ((year + acadYear - 1) <= 2030)
+                                ? ["AR", "MU", "EN", "HY", "GE"]
+                                : ["EN", "HY", "GE"]
+                            ).includes(subjectInfo.department)
+                        ) { 
+                            courseInputData.subject = "CHAMS";
+                        } else {
+                            const deptMap = {
+                                "MA": "MA",
+                                "BL": "BIO",
+                                "PC": "PHYS",
+                                "CS": "CS",
+                                "DV": "DV",
+                                "EL": "EL",
+
+                                "AR": "ART",
+                                "MU": "MU",
+
+                                // MTL
+                                "CH": "MT", // Chinese
+                                "CL": "MT",
+                                "TH": "MT", // Tamil
+                                "TL": "MT",
+                                "MH": "MT", // Malay
+                                "ML": "MT",
+                                "BG": "MT", // Bengali
+                                "GJ": "MT", // Gujarati
+                                "GM": "MT", // German
+                                "HD": "MT", // Hindi
+                                "JP": "MT", // Japanese
+                                "PJ": "MT", // Punjabi
+                                "UD": "MT", // Urdu
+                            };
+                            if (subjectInfo.department in deptMap) {
+                                courseInputData.subject = deptMap[subjectInfo.department];
+                            } else {
+                                courseInputData.subject = "";
+                                courseInputData._subject = "WARNING: This course code could not be shortened to a subject.";
                             }
                         }
                     }
