@@ -208,7 +208,7 @@ async function submitHandler() {
                                 "PJ": "MT", // Punjabi
                                 "UD": "MT", // Urdu
                             };
-                            if (subjectInfo.department in deptMap) {
+                            if (Object.hasOwn(deptMap, subjectInfo.department)) {
                                 courseInputData.subject = deptMap[subjectInfo.department];
                             } else {
                                 courseInputData.subject = "";
